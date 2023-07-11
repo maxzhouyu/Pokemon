@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PokemonCard extends StatelessWidget {
   const PokemonCard(
@@ -28,7 +29,7 @@ class PokemonCard extends StatelessWidget {
           SizedBox(
             height: 100,
             width: 100,
-            child: Image.network(
+            child: SvgPicture.network(
               imageUrl,
               fit: BoxFit.contain,
             ),

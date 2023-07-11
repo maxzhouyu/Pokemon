@@ -18,6 +18,7 @@ class PokemonApp extends StatelessWidget {
         builder: (context) {
           return MaterialApp.router(
             title: 'pokemon',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorSchemeSeed: Colors.blue,
               useMaterial3: true,
