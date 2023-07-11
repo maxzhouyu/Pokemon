@@ -22,6 +22,7 @@ class PokemonCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           color: Colors.blue.withOpacity(.3)),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(name, style: const TextStyle(color: Colors.white, fontSize: 20)),
           SizedBox(

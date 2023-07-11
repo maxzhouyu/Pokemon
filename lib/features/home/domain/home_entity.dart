@@ -1,15 +1,48 @@
 import 'package:clean_framework/clean_framework.dart';
 
+enum HomeStatus { initial, loading, loaded, failed }
 class HomeEntity extends Entity {
-  const HomeEntity({this.id = ''});
+  const HomeEntity({
+    this.pokemons = const [],
+    this.pokemonNameQuery = '',
+    this.status = HomeStatus.initial,
+    this.isRefresh = false,
+  });
 
-  final String id;
+  final List<PokemonData> pokemons;
+  final String pokemonNameQuery;
+  final HomeStatus status;
+  final bool isRefresh;
+
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [pokemons, pokemonNameQuery, status, isRefresh];
 
   @override
-  HomeEntity copyWith({String? id}) {
-    return HomeEntity(id: id ?? this.id);
+  HomeEntity copyWith({
+    List<PokemonData>? pokemons,
+    String? pokemonNameQuery,
+    HomeStatus? status,
+    bool? isRefresh,
+  }) {
+    return HomeEntity(
+      pokemons: pokemons ?? this.pokemons,
+      pokemonNameQuery: pokemonNameQuery ?? this.pokemonNameQuery,
+      status: status ?? this.status,
+      isRefresh: isRefresh ?? this.isRefresh,
+    );
   }
+}
+
+class PokemonData extends Entity {
+  const PokemonData({
+    required this.name,
+    required this.imageUrl,
+  });
+
+  final String name;
+  final String imageUrl;
+
+  @override
+  List<Object?> get props => [name, imageUrl];
 }

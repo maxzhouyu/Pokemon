@@ -1,10 +1,17 @@
 import 'package:clean_framework/clean_framework.dart';
+import 'package:pokemon/features/home/domain/home_entity.dart';
 
 class HomeUIOutput extends Output {
-  const HomeUIOutput({required this.id});
+  const HomeUIOutput({
+    required this.pokemons,
+    required this.status,
+    required this.isRefresh,
+  });
 
-  final String id;
+  final List<PokemonData> pokemons;
+  final HomeStatus status;
+  final bool isRefresh;
 
   @override
-  List<Object> get props => [id];
+  List<Object?> get props => [pokemons, status, isRefresh];
 }
