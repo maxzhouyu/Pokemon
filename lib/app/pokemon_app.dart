@@ -1,6 +1,7 @@
 import 'package:clean_framework/clean_framework.dart';
 import 'package:clean_framework_router/clean_framework_router.dart';
 import 'package:flutter/material.dart';
+import 'package:pokemon/providers.dart';
 import 'package:pokemon/routing.dart';
 
 class PokemonApp extends StatelessWidget {
@@ -9,6 +10,9 @@ class PokemonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppProviderScope(
+      externalInterfaceProviders: [
+        pokemonExternalInterfaceProvider,
+      ],
       child: AppRouterScope(
         create: PokemonRouter.new,
         builder: (context) {

@@ -1,4 +1,6 @@
 import 'package:clean_framework/clean_framework.dart';
+import 'package:flutter/material.dart';
+import 'package:pokemon/features/home/domain/home_entity.dart';
 import 'package:pokemon/features/home/domain/home_ui_output.dart';
 import 'package:pokemon/features/home/domain/home_use_case.dart';
 import 'package:pokemon/features/home/presentation/home_view_model.dart';
@@ -12,24 +14,40 @@ class HomePresenter
   }) : super(provider: homeUseCaseProvider);
 
   @override
+  void onLayoutReady(BuildContext context, HomeUseCase useCase) {
+    useCase.fetchPokemons();
+  }
+
+  @override
+  void onOutputUpdate(BuildContext context, HomeUIOutput output) {
+    if (output.isRefresh) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            output.status == HomeStatus.failed
+                ? 'Sorry, failed refreshing pokemons!'
+                : 'Refreshed pokemons successfully!',
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
   HomeViewModel createViewModel(
     HomeUseCase useCase,
     HomeUIOutput output,
   ) {
-    const spriteBaseUrl =
-        'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world';
     return HomeViewModel(
-      pokemons: const [
-        PokemonViewModel(name: 'Bulbasaur', imageUrl: '$spriteBaseUrl/1.svg'),
-        PokemonViewModel(name: 'Charmander', imageUrl: '$spriteBaseUrl/4.svg'),
-        PokemonViewModel(name: 'Squirtle', imageUrl: '$spriteBaseUrl/7.svg'),
-        PokemonViewModel(name: 'Pikachu', imageUrl: '$spriteBaseUrl/25.svg'),
-      ],
-      onSearch: (query) {},
-      onRefresh: () async {},
-      onRetry: () {},
-      isLoading: false,
-      hasFailedLoading: false,
+      pokemons: output.pokemons
+          .map((pokemon) =>
+              PokemonViewModel(name: pokemon.name, imageUrl: pokemon.imageUrl))
+          .toList(),
+      onSearch: (query) => useCase.setInput(PokemonSearchInput(name: query)),
+      onRefresh: () => useCase.fetchPokemons(isRefresh: true),
+      onRetry: useCase.fetchPokemons,
+      isLoading: output.status == HomeStatus.loading,
+      hasFailedLoading: output.status == HomeStatus.failed,
     );
   }
 }

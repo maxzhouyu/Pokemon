@@ -1,6 +1,7 @@
 import 'package:clean_framework/clean_framework.dart';
 import 'package:pokemon/features/home/domain/home_entity.dart';
 import 'package:pokemon/features/home/domain/home_ui_output.dart';
+import 'package:pokemon/features/home/external_interface/pokemon_collection_gateway.dart';
 
 class HomeUseCase extends UseCase<HomeEntity> {
   HomeUseCase()
@@ -17,11 +18,29 @@ class HomeUseCase extends UseCase<HomeEntity> {
       entity = entity.copyWith(status: HomeStatus.loading);
     }
 
-    // TODO: Make a request to fetch the pokemons
+    await request<PokemonCollectionSuccessInput>(
+        PokemonCollectionGatewayOutput(), onSuccess: (onSuccess) {
+      final pokemons = onSuccess.pokemonIdentities.map(_resolvePokemon);
+      return entity.copyWith(
+        pokemons: pokemons.toList(growable: false),
+        status: HomeStatus.loaded,
+        isRefresh: isRefresh,
+      );
+    }, onFailure: (onFailure) {
+      return entity.copyWith(status: HomeStatus.failed, isRefresh: isRefresh);
+    });
 
     if (isRefresh) {
       entity = entity.copyWith(isRefresh: false, status: HomeStatus.loaded);
     }
+  }
+
+  PokemonData _resolvePokemon(PokemonIdentity pokemon) {
+    return PokemonData(
+      name: pokemon.name.toUpperCase(),
+      imageUrl:
+          'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg',
+    );
   }
 }
 
